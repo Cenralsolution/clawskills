@@ -1,0 +1,121 @@
+# GitHub Installer Skill Configuration
+
+skill:
+  name: GitHub Installer
+  version: 1.0.0
+  description: Clone GitHub repositories and auto-install OpenClaw skills with authentication support
+  author: OpenClaw
+  type: installer
+  dependencies: []
+
+# Input parameters
+input:
+  parameters:
+    - name: repository_url
+      type: string
+      required: true
+      description: GitHub repository URL (https://github.com/owner/repo, owner/repo, or git@github.com:owner/repo)
+      constraints:
+        max_length: 500
+    - name: branch
+      type: string
+      required: false
+      default: main
+      description: Git branch to clone (main, develop, feature-branch, etc.)
+      constraints:
+        min_length: 1
+        max_length: 255
+    - name: action
+      type: string
+      required: false
+      default: clone_and_install
+      description: What to do (clone, install_skills, or clone_and_install)
+      allowed_values: ["clone", "install_skills", "clone_and_install"]
+    - name: target_dir
+      type: string
+      required: false
+      description: Installation target directory (uses default if not specified)
+    - name: google_auth_required
+      type: boolean
+      required: false
+      default: false
+      description: Enable Google OAuth authentication flow
+
+# Output
+output:
+  type: object
+  fields:
+    - name: status
+      type: string
+      description: Result status (success, partial, error, warning)
+    - name: repository
+      type: string
+      description: Repository URL that was cloned
+    - name: branch
+      type: string
+      description: Git branch that was used
+    - name: clone_status
+      type: string
+      description: Clone status (cloned, updated)
+    - name: repository_path
+      type: string
+      description: Path where repository was cloned
+    - name: installation
+      type: object
+      description: Installation results (skills_installed, skills_failed)
+    - name: google_oauth
+      type: object
+      description: Google OAuth information (if requested)
+    - name: timestamp
+      type: string
+      description: ISO timestamp
+
+# Environment variables required
+environment:
+  GITHUB_TOKEN:
+    required: true
+    description: GitHub personal access token
+    security: secret
+    scopes: "repo, read:user"
+  GITHUB_API_BASE_URL:
+    required: false
+    default: https://api.github.com
+    description: GitHub API endpoint
+  GITHUB_TIMEOUT:
+    required: false
+    default: "30"
+    description: Git operation timeout in seconds
+  BACKUP_ENABLED:
+    required: false
+    default: "true"
+    description: Create backups before replacing existing skills
+
+# Google OAuth (optional)
+  GOOGLE_OAUTH_CLIENT_ID:
+    required: false
+    description: Google OAuth 2.0 Client ID
+    security: secret
+  GOOGLE_OAUTH_CLIENT_SECRET:
+    required: false
+    description: Google OAuth 2.0 Client Secret
+    security: secret
+  GOOGLE_OAUTH_REDIRECT_URI:
+    required: false
+    default: "http://localhost:8080/callback"
+    description: OAuth redirect URI after user authorization
+
+# Security
+security:
+  - api_key_required: true
+  - input_validation: true
+  - no_sensitive_logging: true
+  - path_traversal_prevention: true
+  - https_only: true
+  - oauth2_support: true
+
+# Performance
+performance:
+  expected_clone_time_seconds: 15
+  expected_install_time_seconds: 5
+  git_operations: "shallow_clone"
+  auto_skip_large_files: true

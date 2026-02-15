@@ -21,6 +21,12 @@ Three fully functional OpenClaw skills for music generation have been developed 
    - Chains Skill 1 + Skill 2 automatically
    - Perfect for: Complete workflow (recommended for most users)
 
+4. **🔧 GitHub Installer** (`skills/github-installer/`) 🆕
+   - Pulls code/skills/tools from GitHub repositories
+   - Auto-detects and installs OpenClaw skills
+   - Supports GitHub token + optional Google OAuth
+   - Perfect for: Repository management and skill installation
+
 ### Supporting Infrastructure
 
 - **Shared Utilities** (`shared/utils.py`)
@@ -89,6 +95,18 @@ clawskills/
         │   ├── generate_music_from_theme()
         │   └── execute_skill() entry point
         ├── config.yaml              # Workflow definition
+        ├── requirements.txt         # Dependencies
+        └── SKILL.md                 # Detailed documentation
+    
+    └── github-installer/            # SKILL 4 (New!)
+        ├── __init__.py              # Package marker
+        ├── skill.py                 # Main implementation (400+ lines)
+        │   ├── GitHubInstaller class
+        │   ├── clone_repository()
+        │   ├── detect_openclaw_skills()
+        │   ├── install_skills()
+        │   └── execute_skill() entry point
+        ├── config.yaml              # Configuration & scopes
         ├── requirements.txt         # Dependencies
         └── SKILL.md                 # Detailed documentation
 ```
@@ -362,6 +380,7 @@ export OPENAI_API_KEY="sk-your-key"
 | [skills/chatgpt-prompt-generator/SKILL.md](skills/chatgpt-prompt-generator/SKILL.md) | Skill 1 detailed docs |
 | [skills/suno-music-generator/SKILL.md](skills/suno-music-generator/SKILL.md) | Skill 2 detailed docs |
 | [skills/music-orchestrator/SKILL.md](skills/music-orchestrator/SKILL.md) | Skill 3 detailed docs |
+| [skills/github-installer/SKILL.md](skills/github-installer/SKILL.md) | Skill 4 detailed docs (NEW!) |
 | [.workspace-rules.md](.workspace-rules.md) | OpenClaw workspace rules |
 
 ## 🎯 Next Steps

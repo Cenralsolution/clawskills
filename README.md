@@ -23,6 +23,14 @@ Complete suite of skills for generating music using AI. This workspace contains 
 - Location: `skills/music-orchestrator/`
 - **Easiest to use - recommended for most use cases**
 
+### 4. **GitHub Installer** 🆕
+- Pulls code, skills, and tools from GitHub repositories
+- Auto-detects and installs OpenClaw skills
+- Supports GitHub token authentication + optional Google OAuth
+- Output: Installation status and installed skills list
+- Location: `skills/github-installer/`
+- **Use to extend your OpenClaw installation**
+
 ## 🚀 Quick Start
 
 ### 1. Clone & Setup
@@ -98,7 +106,13 @@ clawskills/
 │   │   ├── requirements.txt           # Dependencies
 │   │   └── SKILL.md                   # Detailed documentation
 │   │
-│   └── music-orchestrator/            # Skill 3: Theme → Music (Complete Pipeline)
+│   ├── music-orchestrator/            # Skill 3: Theme → Music (Complete Pipeline)
+│   │   ├── skill.py                   # Main implementation
+│   │   ├── config.yaml                # Configuration
+│   │   ├── requirements.txt           # Dependencies
+│   │   └── SKILL.md                   # Detailed documentation
+│   │
+│   └── github-installer/              # Skill 4: GitHub Repository Installer
 │       ├── skill.py                   # Main implementation
 │       ├── config.yaml                # Configuration
 │       ├── requirements.txt           # Dependencies
@@ -121,15 +135,18 @@ All skills follow security-first principles:
 
 ## 🛠️ Skills Comparison
 
-| Feature | Skill 1 | Skill 2 | Skill 3 |
-|---------|---------|---------|---------|
-| Takes theme input | ❌ | ❌ | ✅ |
-| Takes prompt input | ❌ | ✅ | ❌ |
-| Uses ChatGPT | ✅ | ❌ | ✅ |
-| Uses Suno AI | ❌ | ✅ | ✅ |
-| Returns prompt | ✅ | ❌ | ✓ (in workflow) |
-| Returns music URL | ❌ | ✅ | ✅ |
-| **Ease of Use** | Intermediate | Intermediate | **Easy** ⭐ |
+| Feature | Skill 1 | Skill 2 | Skill 3 | Skill 4 |
+|---------|---------|---------|---------|---------|
+| Takes theme input | ❌ | ❌ | ✅ | ❌ |
+| Takes prompt input | ❌ | ✅ | ❌ | ❌ |
+| Takes repository URL | ❌ | ❌ | ❌ | ✅ |
+| Uses ChatGPT | ✅ | ❌ | ✅ | ❌ |
+| Uses Suno AI | ❌ | ✅ | ✅ | ❌ |
+| Uses GitHub API | ❌ | ❌ | ❌ | ✅ |
+| Returns music URL | ❌ | ✅ | ✅ | ❌ |
+| Installs skills | ❌ | ❌ | ❌ | ✅ |
+| **Use Case** | Prompt creation | Music generation | Complete workflow | Repository management |
+| **Ease of Use** | Intermediate | Intermediate | **Easy** ⭐ | Advanced |
 
 ## 📚 Detailed Documentation
 
@@ -138,6 +155,7 @@ All skills follow security-first principles:
 - [ChatGPT Prompt Generator](skills/chatgpt-prompt-generator/SKILL.md)
 - [Suno AI Music Generator](skills/suno-music-generator/SKILL.md)
 - [Music Generation Orchestrator](skills/music-orchestrator/SKILL.md)
+- [GitHub Installer](skills/github-installer/SKILL.md)
 
 ### For Developers
 
