@@ -1,0 +1,146 @@
+skill:
+  name: "Mubert Music Generator"
+  version: "1.0.0"
+  description: "Generate royalty-free music using Mubert API"
+  author: "OpenClaw Team"
+  provider: "Mubert"
+  website: "https://mubert.com"
+  documentation: "https://mubert.com/en/api"
+
+authentication:
+  type: "api_key"
+  key_name: "MUBERT_API_KEY"
+  required: true
+  instructions: |
+    1. Go to https://mubert.com
+    2. Sign up or log in
+    3. Go to API Settings or Developer Dashboard
+    4. Generate or copy your API key
+    5. Set MUBERT_API_KEY environment variable
+
+capabilities:
+  - text_to_music
+  - multiple_styles
+  - mood_control
+  - intensity_level
+  - royalty_free
+  - commercial_license
+
+styles:
+  - "ambient"
+  - "electronic"
+  - "lo_fi"
+  - "cinematic"
+  - "chillhop"
+  - "synthwave"
+  - "indie"
+  - "rock"
+  - "hip_hop"
+  - "jazz"
+  - "classical"
+  - "folk"
+  - "pop"
+  - "trap"
+  - "tropical"
+  - "deep_house"
+  - "techno"
+  - "trance"
+  - "dubstep"
+  - "metal"
+  - "vocal"
+  - "soul"
+  - "reggae"
+
+moods:
+  - "relaxing"
+  - "energetic"
+  - "happy"
+  - "sad"
+  - "dark"
+  - "aggressive"
+  - "calm"
+  - "uplifting"
+  - "melancholic"
+  - "cute"
+
+parameters:
+  style:
+    type: "string"
+    required: true
+    description: "Music style (see styles list)"
+    examples:
+      - "ambient"
+      - "lofi"
+      - "cinematic"
+
+  duration:
+    type: "integer"
+    required: false
+    default: 60
+    min_value: 10
+    max_value: 600
+    units: "seconds"
+    description: "Length of generated music"
+
+  mood:
+    type: "string"
+    required: false
+    description: "Optional mood tag (see moods list)"
+    examples:
+      - "relaxing"
+      - "energetic"
+      - "happy"
+
+  text:
+    type: "string"
+    required: false
+    max_length: 100
+    description: "Optional text description for enhanced generation"
+
+  intensity:
+    type: "integer"
+    required: false
+    default: 5
+    min_value: 0
+    max_value: 10
+    description: "Intensity level of the music"
+
+output:
+  format: "JSON with WAV file"
+  fields:
+    track_id:
+      type: "string"
+      description: "Unique identifier for the track"
+    download_url:
+      type: "string"
+      description: "URL to the generated audio"
+    file_path:
+      type: "string"
+      description: "Local file path"
+    status:
+      type: "string"
+      description: "Generation status"
+
+licenses:
+  - "Royalty-free"
+  - "Commercial-allowed"
+  - "Attribution not required"
+
+rate_limits:
+  description: "Mubert offers various subscription tiers"
+  free_tier: "Limited generations per month"
+  pro_tier: "Unlimited generations"
+
+environment_variables:
+  MUBERT_API_KEY:
+    required: true
+    description: "API key for Mubert"
+  MUSIC_OUTPUT_DIR:
+    required: false
+    default: "./generated_music"
+    description: "Directory for saving audio files"
+
+error_handling:
+  timeout:
+    default: 60
+    description: "Seconds to wait for generation"

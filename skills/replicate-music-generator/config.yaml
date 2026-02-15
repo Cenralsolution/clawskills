@@ -1,0 +1,133 @@
+skill:
+  name: "Replicate Music Generator"
+  version: "1.0.0"
+  description: "Generate music using Replicate API and various AI models"
+  author: "OpenClaw Team"
+  provider: "Replicate"
+  website: "https://replicate.com"
+  documentation: "https://replicate.com/docs"
+
+authentication:
+  type: "api_token"
+  key_name: "REPLICATE_API_TOKEN"
+  required: true
+  instructions: |
+    1. Go to https://replicate.com
+    2. Sign up or log in
+    3. Go to Account Settings → API Tokens
+    4. Create or copy your API token
+    5. Set REPLICATE_API_TOKEN environment variable
+
+capabilities:
+  - text_to_audio
+  - multiple_models
+  - meta_musicgen
+  - stable_audio
+  - temperature_control
+  - diversity_parameters
+
+available_models:
+  musicgen:
+    id: "facebook/musicgen"
+    description: "Meta's MusicGen - highest quality text-to-audio"
+    best_for: "professional compositions, diverse genres"
+    duration: "5-30 seconds"
+  
+  musicgen_large:
+    id: "facebook/musicgen"
+    description: "MusicGen Large - improved quality and longer duration"
+    best_for: "complex arrangements, longer pieces"
+    duration: "5-30 seconds"
+  
+  stable_audio:
+    id: "stability-ai/stable-audio"
+    description: "Stability AI's audio generation model"
+    best_for: "various audio effects, sound design"
+    duration: "5-30 seconds"
+
+parameters:
+  prompt:
+    type: "string"
+    required: true
+    min_length: 5
+    max_length: 500
+    description: "Text description of desired music"
+    examples:
+      - "upbeat electronic dance music with deep bass"
+      - "calm ambient drone with pads"
+      - "energetic rock anthem with guitar riffs"
+
+  duration:
+    type: "integer"
+    required: false
+    default: 30
+    min_value: 5
+    max_value: 30
+    description: "Length of generated audio in seconds"
+
+  temperature:
+    type: "float"
+    required: false
+    default: 1.0
+    min_value: 0.0
+    max_value: 1.0
+    description: "Randomness/creativity (0.0=deterministic, 1.0=maximally random)"
+
+  top_k:
+    type: "integer"
+    required: false
+    default: 250
+    description: "Diversity parameter for sampling"
+
+  top_p:
+    type: "float"
+    required: false
+    default: 0.0
+    min_value: 0.0
+    max_value: 1.0
+    description: "Nucleus sampling parameter (0.0 = disabled)"
+
+output:
+  format: "JSON with WAV file"
+  fields:
+    prediction_id:
+      type: "string"
+      description: "Unique identifier for the generation"
+    output_url:
+      type: "string"
+      description: "URL to the generated audio file"
+    file_path:
+      type: "string"
+      description: "Local file path where audio was saved"
+    status:
+      type: "string"
+      description: "Generation status (completed, processing, failed)"
+    metadata:
+      type: "object"
+      description: "Additional information about generation"
+
+rate_limits:
+  description: |
+    Replicate pricing based on GPU Time and model used.
+    Check https://replicate.com/pricing for current rates.
+  typical_cost: "$0.50-2.00 per 30-second generation"
+
+environment_variables:
+  REPLICATE_API_TOKEN:
+    required: true
+    description: "API token for Replicate authentication"
+  MUSIC_OUTPUT_DIR:
+    required: false
+    default: "./generated_music"
+    description: "Directory where generated audio files are saved"
+
+error_handling:
+  timeout:
+    default: 600
+    description: "Seconds to wait for generation"
+  retry_policy: "automatic polling with configurable interval"
+  common_errors:
+    invalid_token: "Check REPLICATE_API_TOKEN is set correctly"
+    insufficient_credits: "Replicate account has insufficient credits"
+    model_not_found: "Specified model version not available"
+    generation_timeout: "Generation took too long, try shorter duration"

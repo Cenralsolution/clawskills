@@ -10,15 +10,36 @@ Complete suite of skills for generating music using AI. This workspace contains 
 - Output: Structured music generation prompt
 - Location: `skills/chatgpt-prompt-generator/`
 
-### 2. **Suno AI Music Generator**
-- Generates music files from detailed prompts
-- Uses Suno AI API with async polling
-- Output: Download URL to generated music file
-- Location: `skills/suno-music-generator/`
+### 2. **Music Generation Providers** - Choose Your Provider
+
+#### **AIVA Music Generator** 🎼 (Recommended for Orchestral)
+- Professional orchestral & cinematic music generation
+- Full control over genre, mood, tempo, and key
+- Official API with excellent documentation
+- Location: `skills/aiva-music-generator/`
+
+#### **Replicate Music Generator** 🔄 (Recommended for Flexibility)
+- Multiple AI models: MusicGen, Stable Audio, etc.
+- Fine-grained parameter control (temperature, top-k, top-p)
+- Pay-as-you-go pricing, excellent documentation
+- Location: `skills/replicate-music-generator/`
+
+#### **Mubert Music Generator** 🎵 (Recommended for Speed & Affordability)
+- 23+ styles with mood control
+- Fast generation (10-30 seconds)
+- Affordable, commercial license included
+- Location: `skills/mubert-music-generator/`
+
+#### **Soundraw Music Generator** 🎻 (Recommended for Maximum Control)
+- 20+ genres with 40+ moods, instrumentation control
+- Tempo and energy specifications
+- Most customizable option
+- Location: `skills/soundraw-music-generator/`
 
 ### 3. **Music Generation Orchestrator** ⭐ **START HERE**
-- End-to-end skill that chains together Skills 1 & 2
+- End-to-end skill that chains together ChatGPT + any music provider
 - Single input: theme/topic
+- Configurable to use AIVA, Replicate, Mubert, or Soundraw
 - Output: Direct download link to music file
 - Location: `skills/music-orchestrator/`
 - **Easiest to use - recommended for most use cases**

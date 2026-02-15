@@ -1,0 +1,158 @@
+skill:
+  name: "AIVA Music Generator"
+  version: "1.0.0"
+  description: "Generate professional music using AIVA AI"
+  author: "OpenClaw Team"
+  provider: "AIVA"
+  website: "https://www.aiva.ai"
+  documentation: "https://www.aiva.ai/api"
+
+authentication:
+  type: "api_key"
+  key_name: "AIVA_API_KEY"
+  required: true
+  instructions: |
+    1. Go to https://www.aiva.ai
+    2. Sign up or log in to your account
+    3. Navigate to API Settings / Developer Dashboard
+    4. Generate or copy your API key
+    5. Set AIVA_API_KEY environment variable
+
+capabilities:
+  - text_to_music
+  - genre_specification
+  - mood_control
+  - tempo_control
+  - key_specification
+  - quality_control
+
+parameters:
+  prompt:
+    type: "string"
+    required: true
+    min_length: 10
+    max_length: 500
+    description: "Text description of desired music"
+    examples:
+      - "orchestral theme with dramatic strings and brass"
+      - "ambient electronic soundscape with pads"
+      - "upbeat jazz trio with piano and double bass"
+
+  duration:
+    type: "integer"
+    required: false
+    default: 30
+    min_value: 15
+    max_value: 120
+    description: "Length of generated music in seconds"
+
+  genre:
+    type: "string"
+    required: false
+    default: "ambient"
+    allowed_values:
+      - "ambient"
+      - "orchestral"
+      - "electronic"
+      - "jazz"
+      - "classical"
+      - "rock"
+      - "pop"
+      - "cinematic"
+      - "games"
+      - "electronic_dance"
+
+  mood:
+    type: "string"
+    required: false
+    default: "calm"
+    allowed_values:
+      - "calm"
+      - "energetic"
+      - "dark"
+      - "happy"
+      - "melancholic"
+      - "epic"
+      - "mysterious"
+      - "romantic"
+
+  tempo:
+    type: "integer"
+    required: false
+    default: 90
+    min_value: 40
+    max_value: 240
+    units: "BPM (beats per minute)"
+    description: "Speed of the music"
+
+  key:
+    type: "string"
+    required: false
+    default: "C major"
+    allowed_values:
+      - "C major"
+      - "C minor"
+      - "D major"
+      - "D minor"
+      - "E major"
+      - "E minor"
+      - "F major"
+      - "F minor"
+      - "G major"
+      - "G minor"
+      - "A major"
+      - "A minor"
+      - "B major"
+      - "B minor"
+
+output:
+  format: "JSON"
+  fields:
+    composition_id:
+      type: "string"
+      description: "Unique identifier for the composition"
+    generation_id:
+      type: "string"
+      description: "Unique identifier for the generation process"
+    audio_url:
+      type: "string"
+      description: "URL to the generated audio file"
+    file_path:
+      type: "string"
+      description: "Local file path where audio was saved"
+    status:
+      type: "string"
+      description: "Generation status (completed, processing, failed)"
+    duration:
+      type: "integer"
+      description: "Actual duration of generated music"
+    metadata:
+      type: "object"
+      description: "Additional information about the composition"
+
+rate_limits:
+  description: |
+    AIVA provides different rate limits based on subscription tier.
+    Free tier: Limited generations per month
+    Pro tier: Higher limits with priority processing
+  recommendation: "Check your dashboard at https://www.aiva.ai for current limits"
+
+environment_variables:
+  AIVA_API_KEY:
+    required: true
+    description: "API key for AIVA authentication"
+  MUSIC_OUTPUT_DIR:
+    required: false
+    default: "./generated_music"
+    description: "Directory where generated music files are saved"
+
+error_handling:
+  timeout:
+    default: 300
+    description: "Seconds to wait for generation before timing out"
+  retry_policy: "automatic polling with configurable interval"
+  common_errors:
+    invalid_api_key: "Check that AIVA_API_KEY is set correctly"
+    quota_exceeded: "Your API quota has been exceeded, check your plan"
+    generation_failed: "AIVA returned an error, check prompt and parameters"
+    timeout: "Generation took too long, try with shorter duration or simpler prompt"

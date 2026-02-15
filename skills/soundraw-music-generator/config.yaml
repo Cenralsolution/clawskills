@@ -1,0 +1,199 @@
+skill:
+  name: "Soundraw Music Generator"
+  version: "1.0.0"
+  description: "Generate original AI music using Soundraw API"
+  author: "OpenClaw Team"
+  provider: "Soundraw"
+  website: "https://www.soundraw.io"
+  documentation: "https://www.soundraw.io/api"
+
+authentication:
+  type: "api_key"
+  key_name: "SOUNDRAW_API_KEY"
+  required: true
+  instructions: |
+    1. Go to https://www.soundraw.io
+    2. Sign up or log in to your account
+    3. Navigate to Account → API Keys
+    4. Generate or copy your API key
+    5. Set SOUNDRAW_API_KEY environment variable
+
+capabilities:
+  - text_to_music
+  - extensive_genres
+  - multiple_moods
+  - instrumentation_control
+  - tempo_control
+  - energy_level_control
+  - royalty_free
+  - commercial_license
+
+genres:
+  - "ambient"
+  - "acoustic"
+  - "blues"
+  - "classical"
+  - "country"
+  - "dance"
+  - "electronic"
+  - "funk"
+  - "hip_hop"
+  - "jazz"
+  - "latin"
+  - "metal"
+  - "pop"
+  - "punk"
+  - "reggae"
+  - "rnb"
+  - "rock"
+  - "soul"
+  - "world"
+  - "cinematic"
+  - "experimental"
+  - "indie"
+
+moods:
+  - "aggressive"
+  - "angry"
+  - "bright"
+  - "calm"
+  - "cheerful"
+  - "cinematic"
+  - "dark"
+  - "delicate"
+  - "dramatic"
+  - "dreamy"
+  - "driven"
+  - "emotional"
+  - "energetic"
+  - "epic"
+  - "ethereal"
+  - "exploratory"
+  - "gloomy"
+  - "happy"
+  - "hopeful"
+  - "hypnotic"
+  - "intense"
+  - "introspective"
+  - "joyful"
+  - "light"
+  - "lonely"
+  - "meditative"
+  - "melancholic"
+  - "mellow"
+  - "menacing"
+  - "moody"
+  - "mysterious"
+  - "nostalgic"
+  - "peaceful"
+  - "playful"
+  - "proud"
+  - "relaxed"
+  - "romantic"
+  - "sad"
+  - "serene"
+  - "sophisticated"
+  - "tense"
+  - "uplifting"
+  - "urgent"
+  - "victorious"
+  - "vintage"
+
+parameters:
+  genre:
+    type: "string"
+    required: true
+    description: "Music genre (see genres list)"
+    examples:
+      - "orchestral"
+      - "electronic"
+      - "cinematic"
+
+  mood:
+    type: "string"
+    required: true
+    description: "Emotional tone (see moods list)"
+    examples:
+      - "epic"
+      - "calm"
+      - "mysterious"
+
+  duration:
+    type: "integer"
+    required: false
+    default: 60
+    min_value: 10
+    max_value: 600
+    units: "seconds"
+    description: "Length of generated music"
+
+  instrumentation:
+    type: "string"
+    required: false
+    description: "Description of desired instruments"
+    examples:
+      - "full orchestra with strings"
+      - "electronic synths and drums"
+      - "acoustic guitar and piano"
+
+  tempo:
+    type: "integer"
+    required: false
+    description: "Tempo in BPM (beats per minute)"
+    examples:
+      - 90
+      - 120
+      - 140
+
+  energy:
+    type: "integer"
+    required: false
+    default: 5
+    min_value: 1
+    max_value: 10
+    description: "Energy level of the music"
+
+output:
+  format: "JSON with WAV file"
+  fields:
+    track_id:
+      type: "string"
+      description: "Unique identifier for the track"
+    download_url:
+      type: "string"
+      description: "URL to download the audio"
+    file_path:
+      type: "string"
+      description: "Local file path where audio is saved"
+    status:
+      type: "string"
+      description: "Generation status (completed, processing, failed)"
+    metadata:
+      type: "object"
+      description: "Additional track information"
+
+licenses:
+  - "Royalty-free"
+  - "Commercial-allowed"
+  - "Attribution not required"
+
+rate_limits:
+  description: "Soundraw offers tiered subscriptions"
+  free_tier: "Limited generations per month"
+  creator_tier: "More generations per month"
+  unlimited_tier: "Unlimited generations"
+
+environment_variables:
+  SOUNDRAW_API_KEY:
+    required: true
+    description: "API key for Soundraw authentication"
+  MUSIC_OUTPUT_DIR:
+    required: false
+    default: "./generated_music"
+    description: "Directory for saving generated audio files"
+
+error_handling:
+  timeout:
+    default: 180
+    description: "Seconds to wait for generation"
+  retry_policy: "automatic polling with configurable interval"
