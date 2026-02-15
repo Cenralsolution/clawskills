@@ -1,0 +1,95 @@
+# Music Generation Orchestrator Skill Configuration
+
+skill:
+  name: Music Generation Orchestrator
+  version: 1.0.0
+  description: End-to-end skill that orchestrates theme -> ChatGPT prompt -> Suno AI music -> download link
+  author: OpenClaw
+  type: orchestrator
+  dependencies:
+    - chatgpt-prompt-generator
+    - suno-music-generator
+
+# Input parameters
+input:
+  parameters:
+    - name: theme
+      type: string
+      required: true
+      description: Music theme or topic (e.g., 'cyberpunk city', 'tropical beach')
+      constraints:
+        min_length: 3
+        max_length: 500
+    - name: tags
+      type: string
+      required: false
+      description: Optional tags for Suno AI generation
+      constraints:
+        max_length: 200
+
+# Output
+output:
+  type: object
+  fields:
+    - name: status
+      type: string
+      description: Result status ('success' or 'error')
+    - name: theme
+      type: string
+      description: Original theme
+    - name: download_url
+      type: string
+      description: Direct download link to generated music file
+    - name: song_id
+      type: string
+      description: Unique ID of the generated song
+    - name: workflow
+      type: object
+      description: Detailed workflow execution results
+        - step1_prompt_generation: ChatGPT prompt generation details
+        - step2_music_generation: Suno AI music generation details
+    - name: timestamp
+      type: string
+      description: ISO timestamp of completion
+
+# Environment variables required
+environment:
+  OPENAI_API_KEY:
+    required: true
+    description: OpenAI API key
+    security: secret
+  OPENAI_MODEL:
+    required: false
+    default: gpt-4
+    description: OpenAI model to use
+  SUNO_API_KEY:
+    required: true
+    description: Suno AI API key
+    security: secret
+  SUNO_API_BASE_URL:
+    required: false
+    default: https://api.suno.ai
+    description: Suno AI API base URL
+
+# Security
+security:
+  - api_keys_required: true
+  - input_validation: true
+  - no_sensitive_logging: true
+  - workflow_error_handling: true
+  - timeout_protection: true
+
+# Workflow
+workflow:
+  steps:
+    - step: 1
+      name: Generate Music Prompt
+      service: ChatGPT
+      description: Creates a detailed music generation prompt from the theme
+      error_handling: fail_fast
+    - step: 2
+      name: Generate Music
+      service: Suno AI
+      description: Generates the actual music file from the prompt
+      error_handling: fail_fast
+  estimated_total_time_seconds: 90

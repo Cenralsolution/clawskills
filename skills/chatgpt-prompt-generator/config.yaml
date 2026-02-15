@@ -1,0 +1,62 @@
+# ChatGPT Prompt Generator Skill Configuration
+
+skill:
+  name: ChatGPT Prompt Generator
+  version: 1.0.0
+  description: Generates detailed music creation prompts using ChatGPT based on user themes
+  author: OpenClaw
+  type: generator
+
+# Input parameters
+input:
+  parameters:
+    - name: theme
+      type: string
+      required: true
+      description: The theme or topic for music generation (e.g., 'rainy evening', 'space exploration')
+      constraints:
+        min_length: 3
+        max_length: 500
+        allowed_chars: "a-zA-Z0-9 -_,."
+
+# Output
+output:
+  type: object
+  fields:
+    - name: status
+      type: string
+      description: Result status ('success' or 'error')
+    - name: prompt
+      type: string
+      description: Generated music creation prompt
+    - name: theme
+      type: string
+      description: The original theme
+    - name: model
+      type: string
+      description: OpenAI model used
+    - name: timestamp
+      type: string
+      description: ISO timestamp of generation
+
+# Environment variables required
+environment:
+  OPENAI_API_KEY:
+    required: true
+    description: OpenAI API key
+    security: secret
+  OPENAI_MODEL:
+    required: false
+    default: gpt-4
+    description: OpenAI model to use
+  OPENAI_TIMEOUT:
+    required: false
+    default: "30"
+    description: API request timeout in seconds
+
+# Security
+security:
+  - api_key_required: true
+  - input_validation: true
+  - no_sensitive_logging: true
+  - rate_limiting: recommended
