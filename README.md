@@ -90,19 +90,19 @@ clawskills/
 │   │   ├── skill.py                   # Main implementation
 │   │   ├── config.yaml                # Configuration
 │   │   ├── requirements.txt           # Dependencies
-│   │   └── README.md                  # Detailed documentation
+│   │   └── SKILL.md                   # Detailed documentation
 │   │
 │   ├── suno-music-generator/          # Skill 2: Prompt → Music
 │   │   ├── skill.py                   # Main implementation
 │   │   ├── config.yaml                # Configuration
 │   │   ├── requirements.txt           # Dependencies
-│   │   └── README.md                  # Detailed documentation
+│   │   └── SKILL.md                   # Detailed documentation
 │   │
 │   └── music-orchestrator/            # Skill 3: Theme → Music (Complete Pipeline)
 │       ├── skill.py                   # Main implementation
 │       ├── config.yaml                # Configuration
 │       ├── requirements.txt           # Dependencies
-│       └── README.md                  # Detailed documentation
+│       └── SKILL.md                   # Detailed documentation
 │
 └── docs/                              # Additional documentation
     └── ARCHITECTURE.md                # Technical architecture details
@@ -135,9 +135,9 @@ All skills follow security-first principles:
 
 ### For Individual Skills
 
-- [ChatGPT Prompt Generator](skills/chatgpt-prompt-generator/README.md)
-- [Suno AI Music Generator](skills/suno-music-generator/README.md)
-- [Music Generation Orchestrator](skills/music-orchestrator/README.md)
+- [ChatGPT Prompt Generator](skills/chatgpt-prompt-generator/SKILL.md)
+- [Suno AI Music Generator](skills/suno-music-generator/SKILL.md)
+- [Music Generation Orchestrator](skills/music-orchestrator/SKILL.md)
 
 ### For Developers
 
@@ -331,4 +331,4 @@ These skills are part of the OpenClaw platform.
 
 ---
 
-**Ready to create music?** Start with the [Music Generation Orchestrator](skills/music-orchestrator/README.md)!
+**Ready to create music?** Start with the [Music Generation Orchestrator](skills/music-orchestrator/SKILL.md)!

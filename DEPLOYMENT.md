@@ -69,7 +69,7 @@ clawskills/
     │   │   └── execute_skill() entry point
     │   ├── config.yaml              # Configuration & validation rules
     │   ├── requirements.txt         # Dependencies
-    │   └── README.md                # Detailed documentation
+    │   └── SKILL.md                 # Detailed documentation
     │
     ├── suno-music-generator/        # SKILL 2
     │   ├── __init__.py              # Package marker
@@ -80,7 +80,7 @@ clawskills/
     │   │   └── execute_skill() entry point
     │   ├── config.yaml              # Configuration & polling settings
     │   ├── requirements.txt         # Dependencies
-    │   └── README.md                # Detailed documentation
+    │   └── SKILL.md                 # Detailed documentation
     │
     └── music-orchestrator/          # SKILL 3 (Entry Point)
         ├── __init__.py              # Package marker
@@ -90,7 +90,7 @@ clawskills/
         │   └── execute_skill() entry point
         ├── config.yaml              # Workflow definition
         ├── requirements.txt         # Dependencies
-        └── README.md                # Detailed documentation
+        └── SKILL.md                 # Detailed documentation
 ```
 
 ## 🚀 Quick Setup (5 minutes)
@@ -359,9 +359,9 @@ export OPENAI_API_KEY="sk-your-key"
 |----------|---------|
 | [README.md](README.md) | Overview & quick start |
 | [/docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Technical design & components |
-| [skills/chatgpt-prompt-generator/README.md](skills/chatgpt-prompt-generator/README.md) | Skill 1 detailed docs |
-| [skills/suno-music-generator/README.md](skills/suno-music-generator/README.md) | Skill 2 detailed docs |
-| [skills/music-orchestrator/README.md](skills/music-orchestrator/README.md) | Skill 3 detailed docs |
+| [skills/chatgpt-prompt-generator/SKILL.md](skills/chatgpt-prompt-generator/SKILL.md) | Skill 1 detailed docs |
+| [skills/suno-music-generator/SKILL.md](skills/suno-music-generator/SKILL.md) | Skill 2 detailed docs |
+| [skills/music-orchestrator/SKILL.md](skills/music-orchestrator/SKILL.md) | Skill 3 detailed docs |
 | [.workspace-rules.md](.workspace-rules.md) | OpenClaw workspace rules |
 
 ## 🎯 Next Steps
@@ -408,4 +408,4 @@ To integrate with OpenClaw:
 ✅ **Security-first design (zero-trust)**  
 ✅ **Ready for deployment to clawhub.ai**  
 
-**Recommended next step**: Start with the [Music Generation Orchestrator](skills/music-orchestrator/README.md) for the easiest integration!
+**Recommended next step**: Start with the [Music Generation Orchestrator](skills/music-orchestrator/SKILL.md) for the easiest integration!
