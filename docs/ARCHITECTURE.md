@@ -1,8 +1,8 @@
-# Music Generation Skills - Architecture & Design
+# Music Generation Skills - Architecture &Design
 
 ## Overview
 
-The OpenClaw Music Generation Skills suite consists of three modular skills that work together to convert themes into downloadable music files. The architecture follows security-first and zero-trust principles.
+The OpenClaw Music Generation Skills suite consists of modular skills that work together to convert themes into downloadable music files. The architecture features choice of 4 official music generation providers (AIVA, Replicate, Mubert, Soundraw). Follows security-first and zero-trust principles.
 
 ## Architecture Diagram
 
@@ -19,18 +19,27 @@ The OpenClaw Music Generation Skills suite consists of three modular skills that
                  ┌───────────┴───────────┐
                  ↓                       ↓
         ┌─────────────────────┐  ┌──────────────────────┐
-        │ ChatGPT Prompt Gen  │  │ Suno AI Music Gen    │
-        │ (Skill 1)           │  │ (Skill 2)            │
+        │ ChatGPT Prompt Gen  │  │ Music Provider       │
+        │ (Skill 1)           │  │ (Choose One or More) │
         └────────┬────────────┘  └─────────┬────────────┘
-                 ↓                          ↓
-        ┌─────────────────────┐  ┌──────────────────────┐
-        │  OpenAI API         │  │  Suno AI API         │
-        │  (ChatGPT)          │  │  (with polling)      │
-        └─────────────────────┘  └──────────────────────┘
-                 ↓                          ↓
-        ┌─────────────────────┐  ┌──────────────────────┐
-        │  Generated Prompt   │  │  Music File URL      │
-        └─────────────────────┘  └──────────────────────┘
+                 ↓                          │
+        ┌─────────────────────┐             │
+        │  OpenAI API         │             │
+        │  (ChatGPT)          │             │
+        └─────────────────────┘             │
+                 ↓                          │
+        ┌─────────────────────┐    ┌────────┴─────────┬──────────┐
+        │  Generated Prompt   │    │          │        │          │
+        └─────────────────────┘    ↓          ↓        ↓          ↓
+                                  AIVA    Replicate Mubert Soundraw
+                                  API      API       API    API
+                                   │        │        │       │
+                                   └────────┴────────┴───────┘
+                                           ↓
+                                  ┌──────────────────┐
+                                  │  Music File URL  │
+                                  │  Downloaded ●●●  │
+                                  └──────────────────┘
 ```
 
 ## Core Components
@@ -82,22 +91,9 @@ generate_prompt(theme: str) -> Dict[str, Any]
 - API error: Generic message with logging
 - Timeout: Timeout-specific message
 
-### 3. Suno AI Music Generator (`skills/suno-music-generator/skill.py`)
+### 3. Music Generation Providers
 
-**Purpose**: Generate music files from detailed prompts
-
-**Class**: `SunoAIMusicGenerator`
-
-**Key Methods**:
-```python
-generate_music(prompt: str, tags: Optional[str]) -> Dict[str, Any]
-```
-
-**Workflow**:
-1. Validate prompt (10-2000 characters)
-2. Send POST to Suno API to initiate generation
-3. Receive song_id from response
-4. Poll for completion (up to 30 retries with 2s delay)
+**Choice of 4 Official APIs**:
 5. Return download URL and metadata
 6. Handle timeouts and errors
 

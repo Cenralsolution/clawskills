@@ -11,14 +11,27 @@ Three fully functional OpenClaw skills for music generation have been developed 
    - Uses OpenAI ChatGPT API
    - Perfect for: Custom prompt generation
 
-2. **🎵 Suno AI Music Generator** (`skills/suno-music-generator/`)
-   - Generates music files from prompts
-   - Uses Suno AI API with intelligent polling
-   - Perfect for: Music file generation from detailed prompts
+2. **🎵 Music Provider Skills** - Choose Your Provider
+   
+   - **AIVA Music Generator** (`skills/aiva-music-generator/`)
+     - Professional orchestral & cinematic music generation
+     - Perfect for: Film/TV scores, orchestral compositions
+   
+   - **Replicate Music Generator** (`skills/replicate-music-generator/`)
+     - Multiple AI models: MusicGen, Stable Audio, etc.
+     - Perfect for: Developers, experimentation, flexibility
+   
+   - **Mubert Music Generator** (`skills/mubert-music-generator/`)
+     - 23+ styles with mood and intensity control
+     - Perfect for: Streamers, podcasters, content creators
+   
+   - **Soundraw Music Generator** (`skills/soundraw-music-generator/`)
+     - Most customizable: 20+ genres, 40+ moods
+     - Perfect for: Professional composers, video producers
 
 3. **🎵 Music Generation Orchestrator** (`skills/music-orchestrator/`) ⭐
    - End-to-end automation: Theme → Music
-   - Chains Skill 1 + Skill 2 automatically
+   - Chains ChatGPT + any music provider automatically
    - Perfect for: Complete workflow (recommended for most users)
 
 4. **🔧 GitHub Installer** (`skills/github-installer/`) 🆕
@@ -77,14 +90,43 @@ clawskills/
     │   ├── requirements.txt         # Dependencies
     │   └── SKILL.md                 # Detailed documentation
     │
-    ├── suno-music-generator/        # SKILL 2
+    ├── aiva-music-generator/       # MUSIC PROVIDER 1
+    │   ├── __init__.py              # Package marker
+    │   ├── skill.py                 # Main implementation (500+ lines)
+    │   │   ├── AIVAMusicGenerator class
+    │   │   ├── generate_music()
+    │   │   └── execute_skill() entry point
+    │   ├── config.yaml              # Configuration & API settings
+    │   ├── requirements.txt         # Dependencies
+    │   └── SKILL.md                 # Detailed documentation
+    │
+    ├── replicate-music-generator/   # MUSIC PROVIDER 2
     │   ├── __init__.py              # Package marker
     │   ├── skill.py                 # Main implementation (400+ lines)
-    │   │   ├── SunoAIMusicGenerator class
+    │   │   ├── ReplicateMusicGenerator class
     │   │   ├── generate_music()
-    │   │   ├── _poll_for_completion()
     │   │   └── execute_skill() entry point
-    │   ├── config.yaml              # Configuration & polling settings
+    │   ├── config.yaml              # Configuration & model selection
+    │   ├── requirements.txt         # Dependencies
+    │   └── SKILL.md                 # Detailed documentation
+    │
+    ├── mubert-music-generator/      # MUSIC PROVIDER 3
+    │   ├── __init__.py              # Package marker
+    │   ├── skill.py                 # Main implementation (350+ lines)
+    │   │   ├── MubertMusicGenerator class
+    │   │   ├── generate_music()
+    │   │   └── execute_skill() entry point
+    │   ├── config.yaml              # Configuration & styles
+    │   ├── requirements.txt         # Dependencies
+    │   └── SKILL.md                 # Detailed documentation
+    │
+    ├── soundraw-music-generator/    # MUSIC PROVIDER 4
+    │   ├── __init__.py              # Package marker
+    │   ├── skill.py                 # Main implementation (400+ lines)
+    │   │   ├── SoundrawMusicGenerator class
+    │   │   ├── generate_music()
+    │   │   └── execute_skill() entry point
+    │   ├── config.yaml              # Configuration & customization
     │   ├── requirements.txt         # Dependencies
     │   └── SKILL.md                 # Detailed documentation
     │
@@ -138,12 +180,35 @@ cp .env.template .env
 3. Copy: `sk-...`
 4. Add to `.env`: `OPENAI_API_KEY=sk-...`
 
-#### Suno AI API Key
-1. Go to https://www.suno.ai/
+#### Choose a Music Provider (Pick One or More)
+
+**AIVA Music Generator**
+1. Go to https://www.aiva.ai
 2. Sign up / Log in
-3. Go to account settings → API
-4. Create API key
-5. Add to `.env`: `SUNO_API_KEY=...`
+3. Go to API Settings / Developer Dashboard
+4. Generate or copy API key
+5. Add to `.env`: `AIVA_API_KEY=...`
+
+**Replicate Music Generator**
+1. Go to https://replicate.com
+2. Sign up / Log in
+3. Go to Account → API Tokens
+4. Create or copy token (starts with r8_)
+5. Add to `.env`: `REPLICATE_API_TOKEN=r8_...`
+
+**Mubert Music Generator**
+1. Go to https://mubert.com
+2. Sign up / Log in
+3. Go to API Settings / Developer Dashboard
+4. Generate or copy API key
+5. Add to `.env`: `MUBERT_API_KEY=...`
+
+**Soundraw Music Generator**
+1. Go to https://www.soundraw.io
+2. Sign up / Log in
+3. Go to Account Settings → API
+4. Generate or copy API key
+5. Add to `.env`: `SOUNDRAW_API_KEY=...`
 
 ### 4. Test Setup
 
@@ -175,14 +240,20 @@ OPENAI_MODEL=gpt-4                    # Options: gpt-4, gpt-4-turbo-preview, gpt
 # OPTIONAL - OpenAI Fine-tuning
 OPENAI_TIMEOUT=30                     # Timeout in seconds
 
-# REQUIRED - Suno AI Configuration
-SUNO_API_KEY=your-suno-api-key
-SUNO_API_BASE_URL=https://api.suno.ai
+# MUSIC PROVIDER CONFIGURATION
+# Choose one or more providers:
 
-# OPTIONAL - Suno AI Fine-tuning
-SUNO_TIMEOUT=60                       # Timeout in seconds
-SUNO_MAX_RETRIES=30                   # Polling retries
-SUNO_RETRY_DELAY=2                    # Seconds between polls
+# AIVA Music Generator
+AIVA_API_KEY=your-aiva-api-key-here
+
+# Replicate Music Generator
+REPLICATE_API_TOKEN=r8_your-token-here
+
+# Mubert Music Generator
+MUBERT_API_KEY=your-mubert-api-key-here
+
+# Soundraw Music Generator
+SOUNDRAW_API_KEY=your-soundraw-api-key-here
 ```
 
 ### Verify Each Skill Works
@@ -196,10 +267,24 @@ result = gen.generate_prompt("ocean waves")
 print(f"✅ Skill 1: {result['status']}")
 # Output: ✅ Skill 1: success
 
-# Test Skill 2: Suno Music Generator
-from skills.suno_music_generator.skill import SunoAIMusicGenerator
+# Test Music Providers
+# Choose one of the following:
 
-gen = SunoAIMusicGenerator()
+# Option 1: AIVA
+from skills.aiva_music_generator.skill import AIVAMusicGenerator
+gen = AIVAMusicGenerator()
+
+# Option 2: Replicate
+from skills.replicate_music_generator.skill import ReplicateMusicGenerator
+gen = ReplicateMusicGenerator(model="musicgen")
+
+# Option 3: Mubert
+from skills.mubert_music_generator.skill import MubertMusicGenerator
+gen = MubertMusicGenerator()
+
+# Option 4: Soundraw
+from skills.soundraw_music_generator.skill import SoundrawMusicGenerator
+gen = SoundrawMusicGenerator()
 result = gen.generate_music("Create ambient electronic music with ocean sounds...")
 print(f"✅ Skill 2: {result['status']}")
 # Output: ✅ Skill 2: success (after ~90 seconds)
