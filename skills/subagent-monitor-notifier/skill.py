@@ -214,10 +214,20 @@ class SubAgentMonitor:
                 
                 result["scheduled"] = True
                 result["schedule_pattern"] = schedule_pattern
-                logger.info(f"Scheduled monitoring with pattern: {schedule_pattern}")
+                safe_log_api_call(
+                    "SubAgentMonitor",
+                    "start_monitoring",
+                    "scheduled",
+                    {"agents": len(agent_ids), "pattern": schedule_pattern}
+                )
                 
             except Exception as e:
-                logger.error(f"Failed to schedule monitoring: {str(e)}")
+                safe_log_api_call(
+                    "SubAgentMonitor",
+                    "start_monitoring",
+                    "error",
+                    {"error": str(e), "error_type": type(e).__name__}
+                )
                 result["scheduling_error"] = str(e)
         
         # Perform initial poll
@@ -274,7 +284,12 @@ class SubAgentMonitor:
                 self.last_poll_time[agent_id] = datetime.now()
                 
             except Exception as e:
-                logger.error(f"Error polling agent {agent_id}: {str(e)}")
+                safe_log_api_call(
+                    "SubAgentMonitor",
+                    "poll_agents",
+                    "error",
+                    {"agent_id": agent_id, "error": str(e), "error_type": type(e).__name__}
+                )
         
         return changes
     
@@ -372,50 +387,147 @@ Progress: {status.completion_percentage}%
     
     def _notify_email(self, message: str, change: StatusChange) -> None:
         """Send notification via email"""
-        # Placeholder for email notification
-        email_config = os.getenv("NOTIFICATION_EMAIL_CONFIG")
-        logger.info(f"[EMAIL] Sending notification to: {email_config}")
+        try:
+            # Placeholder for email notification
+            email_config = os.getenv("NOTIFICATION_EMAIL_CONFIG")
+            if email_config:
+                safe_log_api_call(
+                    "SubAgentMonitor",
+                    "notify_email",
+                    "sending",
+                    {"agent_id": change.agent_id, "status": change.new_status}
+                )
+            else:
+                logger.debug("Email notifications disabled: NOTIFICATION_EMAIL_CONFIG not set")
+        except Exception as e:
+            logger.error(f"Email notification failed: {e}")
     
     def _notify_webhook(self, message: str, change: StatusChange) -> None:
         """Send notification via webhook"""
-        webhook_url = os.getenv("NOTIFICATION_WEBHOOK_URL")
-        if webhook_url:
-            try:
-                import requests
-                payload = {
-                    "agent_id": change.agent_id,
-                    "previous_status": change.previous_status,
-                    "new_status": change.new_status,
-                    "timestamp": change.timestamp,
-                    "message": message
-                }
-                requests.post(webhook_url, json=payload, timeout=10)
-            except Exception as e:
-                logger.error(f"Webhook notification failed: {e}")
+        try:
+            # Try to get webhook URL - it's a sensitive credential that should be protected
+            webhook_url = os.getenv("NOTIFICATION_WEBHOOK_URL")
+            
+            if not webhook_url:
+                logger.debug("Webhook notifications disabled: NOTIFICATION_WEBHOOK_URL not set")
+                return
+            
+            if not webhook_url.startswith(('http://', 'https://')):
+                logger.error("Invalid webhook URL format (must be HTTP/HTTPS)")
+                return
+            
+            import requests
+            
+            payload = {
+                "agent_id": change.agent_id,
+                "previous_status": change.previous_status,
+                "new_status": change.new_status,
+                "timestamp": change.timestamp,
+                "message": message
+            }
+            
+            # Log the attempt without exposing the URL
+            safe_log_api_call(
+                "SubAgentMonitor",
+                "notify_webhook",
+                "sending",
+                {"agent_id": change.agent_id, "status": change.new_status}
+            )
+            
+            requests.post(webhook_url, json=payload, timeout=10)
+            
+            safe_log_api_call(
+                "SubAgentMonitor",
+                "notify_webhook",
+                "success",
+                {"agent_id": change.agent_id}
+            )
+            
+        except Exception as e:
+            safe_log_api_call(
+                "SubAgentMonitor",
+                "notify_webhook",
+                "error",
+                {"error": str(e), "error_type": type(e).__name__}
+            )
     
     def _notify_slack(self, message: str, change: StatusChange) -> None:
         """Send notification via Slack"""
-        slack_webhook = os.getenv("SLACK_WEBHOOK_URL")
-        if slack_webhook:
-            try:
-                import requests
-                color = "danger" if change.new_status in ["failed", "timeout"] else "good"
-                payload = {
-                    "attachments": [{
-                        "color": color,
-                        "title": f"Agent {change.agent_id} Status Update",
-                        "text": message,
-                        "ts": int(time.time())
-                    }]
-                }
-                requests.post(slack_webhook, json=payload, timeout=10)
-            except Exception as e:
-                logger.error(f"Slack notification failed: {e}")
+        try:
+            slack_webhook = os.getenv("SLACK_WEBHOOK_URL")
+            
+            if not slack_webhook:
+                logger.debug("Slack notifications disabled: SLACK_WEBHOOK_URL not set")
+                return
+            
+            if not slack_webhook.startswith(('http://', 'https://')):
+                logger.error("Invalid Slack webhook URL format (must be HTTP/HTTPS)")
+                return
+            
+            import requests
+            
+            color = "danger" if change.new_status in ["failed", "timeout"] else "good"
+            payload = {
+                "attachments": [{
+                    "color": color,
+                    "title": f"Agent {change.agent_id} Status Update",
+                    "text": message,
+                    "ts": int(time.time())
+                }]
+            }
+            
+            # Log the attempt without exposing the webhook URL
+            safe_log_api_call(
+                "SubAgentMonitor",
+                "notify_slack",
+                "sending",
+                {"agent_id": change.agent_id, "status": change.new_status}
+            )
+            
+            requests.post(slack_webhook, json=payload, timeout=10)
+            
+            safe_log_api_call(
+                "SubAgentMonitor",
+                "notify_slack",
+                "success",
+                {"agent_id": change.agent_id}
+            )
+            
+        except Exception as e:
+            safe_log_api_call(
+                "SubAgentMonitor",
+                "notify_slack",
+                "error",
+                {"error": str(e), "error_type": type(e).__name__}
+            )
     
     def _notify_sms(self, message: str, change: StatusChange) -> None:
         """Send notification via SMS"""
-        sms_config = os.getenv("NOTIFICATION_SMS_CONFIG")
-        logger.info(f"[SMS] Sending to: {sms_config}")
+        try:
+            sms_config = os.getenv("NOTIFICATION_SMS_CONFIG")
+            
+            if not sms_config:
+                logger.debug("SMS notifications disabled: NOTIFICATION_SMS_CONFIG not set")
+                return
+            
+            # Log the attempt without exposing configuration
+            safe_log_api_call(
+                "SubAgentMonitor",
+                "notify_sms",
+                "sending",
+                {"agent_id": change.agent_id, "status": change.new_status}
+            )
+            
+            # Placeholder for SMS implementation
+            logger.info(f"SMS notification queued for agent {change.agent_id}")
+            
+        except Exception as e:
+            safe_log_api_call(
+                "SubAgentMonitor",
+                "notify_sms",
+                "error",
+                {"error": str(e), "error_type": type(e).__name__}
+            )
     
     def get_agent_status(self, agent_id: str) -> Dict[str, Any]:
         """Get current status of an agent"""
@@ -535,7 +647,12 @@ Progress: {status.completion_percentage}%
                 }
         
         except Exception as e:
-            logger.error(f"Skill execution failed: {str(e)}", exc_info=True)
+            safe_log_api_call(
+                "SubAgentMonitor",
+                f"execute_skill(action={input_data.get('action', 'unknown')})",
+                "error",
+                {"error": str(e), "error_type": type(e).__name__}
+            )
             
             return {
                 "status": "error",
