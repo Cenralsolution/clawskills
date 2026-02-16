@@ -4,6 +4,10 @@ python-dotenv>=0.19.0
 pyyaml>=6.0
 GitPython>=3.1.0
 
+# Sub-Agent Monitor & Notifier Skill
+apscheduler>=3.10.0
+schedule>=1.1.0
+
 # All features included:
 # - ChatGPT Prompt Generator
 # - AIVA Music Generator  
@@ -12,7 +16,13 @@ GitPython>=3.1.0
 # - Soundraw Music Generator
 # - Music Generation Orchestrator
 # - GitHub Installer
+# - Sub-Agent Monitor & Notifier
 # - Shared utilities and validation
+
+# Optional notification providers
+# twilio>=6.0.0           # SMS notifications
+# slack-sdk>=3.0.0        # Slack integration
+# sendgrid>=6.0.0         # Email via SendGrid
 
 # Optional: For development and testing
 # pytest>=7.0.0

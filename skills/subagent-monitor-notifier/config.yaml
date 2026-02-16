@@ -1,0 +1,287 @@
+skill:
+  name: "Sub-Agent Monitor & Notifier"
+  version: "1.0.0"
+  description: "Monitor sub-agent status and send push notifications for status changes"
+  category: "orchestration"
+  purpose: "Provides built-in polling-based monitoring without requiring modifications to sub-agents"
+
+# Polling Configuration
+polling:
+  # Default interval between status checks (in seconds)
+  default_poll_interval: 60
+  
+  # Maximum time to wait for agent response (in seconds)
+  request_timeout: 30
+  
+  # Data retention policy
+  retention:
+    days: 7
+    max_history_entries: 1000
+
+# Scheduling Configuration
+scheduling:
+  # Enable background job scheduling
+  enabled: true
+  
+  # Default monitoring schedule (cron pattern)
+  # Format: minute hour day month day_of_week
+  # Examples:
+  #   "*/1 * * * *"    = every 1 minute
+  #   "*/5 * * * *"    = every 5 minutes
+  #   "0 * * * *"      = every hour
+  #   "0 0 * * *"      = daily at midnight
+  #   "0 */6 * * *"    = every 6 hours
+  default_schedule: "*/5 * * * *"
+  
+  # Maximum number of concurrent polling jobs
+  max_concurrent_polls: 10
+  
+  # Thread pool settings
+  threadpool_size: 5
+
+# Notification Channels Configuration
+notifications:
+  # Default channels to use
+  enabled_channels:
+    - log
+    - file
+  
+  # Suppress duplicate alerts within this time window (seconds)
+  deduplication_window: 300
+  
+  # Log File Channel
+  log:
+    level: "INFO"
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # File Channel
+  file:
+    enabled: true
+    alert_file: "./monitor_data/alerts.log"
+    archive_old_logs: true
+    log_rotation_days: 7
+  
+  # Email Channel
+  email:
+    enabled: false
+    server: "smtp.gmail.com"
+    port: 587
+    use_tls: true
+    # Email credentials should be set via environment variables:
+    # NOTIFICATION_EMAIL_USER, NOTIFICATION_EMAIL_PASSWORD
+    from_address: "alerts@openclaw.local"
+    to_addresses:
+      - "admin@example.com"
+      - "devops@example.com"
+    
+    # Email templates
+    templates:
+      subject: "Alert: Agent {agent_id} Status Changed to {new_status}"
+      body_format: "text"  # "text" or "html"
+  
+  # Webhook Channel
+  webhook:
+    enabled: false
+    # URL should be set via environment variable: NOTIFICATION_WEBHOOK_URL
+    timeout: 10
+    retry_count: 3
+    retry_delay: 5
+    
+    # Payload format
+    payload_format: "json"
+    include_history: true
+    include_details: true
+  
+  # Slack Channel
+  slack:
+    enabled: false
+    # Webhook URL should be set via environment variable: SLACK_WEBHOOK_URL
+    timeout: 10
+    
+    # Message formatting
+    mention_on_failure: true
+    failure_mentions:
+      - "@devops"
+      - "@oncall"
+    
+    # Color coding by status
+    status_colors:
+      completed: "#36a64f"      # Green
+      running: "#0099ff"        # Blue
+      failed: "#ff0000"         # Red
+      timeout: "#ff6600"        # Orange
+      cancelled: "#cccccc"      # Gray
+      pending: "#ffff00"        # Yellow
+  
+  # SMS Channel
+  sms:
+    enabled: false
+    # SMS provider configuration (Twilio, Nexmo, etc.)
+    # Credentials should be set via environment variables
+    provider: "twilio"  # or "nexmo", "vonage"
+    
+    # Phone numbers for alerts
+    alert_numbers:
+      - "+1234567890"
+  
+  # Alert Aggregation
+  aggregation:
+    enabled: true
+    # Batch notifications within this window (seconds)
+    batch_window: 60
+    # Minimum number of changes to trigger batch notification
+    batch_threshold: 3
+
+# Agent Monitoring Configuration
+agents:
+  # Monitored agents can be defined here or specified at runtime
+  definitions:
+    # Example agent configuration
+    agent_example:
+      enabled: true
+      poll_interval: 60
+      timeout: 30
+      alert_on_changes:
+        - "status"
+        - "error"
+      ignore_completion_percentage_below: 10
+  
+  # Discovery method for automatically finding agents
+  discovery:
+    enabled: false
+    method: "openclaw_registry"  # or "environment_scan", "config_file"
+    refresh_interval: 300
+
+# Alert Severity Configuration
+alerts:
+  # Alert priority levels
+  severity_levels:
+    critical:
+      statuses: ["failed", "timeout"]
+      channels: ["log", "email", "slack", "sms"]
+      priority: 1
+    
+    warning:
+      statuses: ["pending", "cancelled"]
+      channels: ["log", "file", "slack"]
+      priority: 2
+    
+    info:
+      statuses: ["running", "completed"]
+      channels: ["log", "file"]
+      priority: 3
+  
+  # Alert thresholds
+  thresholds:
+    # Number of consecutive failures before escalation
+    failure_escalation_threshold: 3
+    # Time window for failure counting (seconds)
+    failure_window: 300
+    # Percentage complete before considering stalled
+    stall_threshold_percentage: 1
+
+# Storage Configuration
+storage:
+  # Base directory for monitoring data
+  base_dir: "./monitor_data"
+  
+  # Storage backends
+  backend: "file"  # or "sqlite", "postgresql"
+  
+  # File storage settings
+  file:
+    status_snapshot_dir: "./monitor_data/snapshots"
+    history_dir: "./monitor_data/history"
+    alerts_dir: "./monitor_data/alerts"
+    serialization_format: "json"  # or "msgpack" for binary
+  
+  # Database storage settings (if using sqlite/postgresql)
+  database:
+    # Connection string format for database backend
+    connection_string: "sqlite:///./monitor_data/agents.db"
+    # connection_string: "postgresql://user:password@host/dbname"
+
+# Integration Configuration
+integration:
+  # OpenClaw Framework integration
+  openclaw:
+    # Access to sessions_history for fetching agent status
+    use_sessions_history: true
+    # Access to subagents list for auto-discovery
+    use_subagents_registry: true
+    # Access to process logs
+    use_process_logs: true
+  
+  # Integration with other skills
+  skills:
+    # Trigger ChatGPT skill to generate alerts summary
+    chatgpt_summarization:
+      enabled: false
+      trigger_on: "multiple_failures"
+    
+    # Integration with GitHub skill for auto-reporting
+    github_integration:
+      enabled: false
+      trigger_on: "critical_failure"
+      auto_create_issues: false
+      repo_owner: "openclaw"
+      repo_name: "monitoring"
+
+# Security Configuration
+security:
+  # Zero-trust validation
+  validate_inputs: true
+  validate_agent_ids: true
+  
+  # Rate limiting
+  rate_limiting:
+    enabled: true
+    # Max notifications per agent per minute
+    max_alerts_per_minute: 10
+  
+  # Credential handling
+  secrets:
+    # Load secrets from environment variables
+    load_from_env: true
+    # Supported environment variables:
+    # - NOTIFICATION_EMAIL_USER
+    # - NOTIFICATION_EMAIL_PASSWORD
+    # - NOTIFICATION_WEBHOOK_URL
+    # - SLACK_WEBHOOK_URL
+    # - SMS_PROVIDER_KEY
+    # - MONITOR_STORAGE_DIR
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  
+  # Log file settings
+  file:
+    enabled: true
+    path: "./monitor_data/monitor.log"
+    max_size_mb: 10
+    backup_count: 5
+  
+  # Console output
+  console:
+    enabled: true
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Performance Configuration
+performance:
+  # Enable performance monitoring
+  track_metrics: true
+  
+  # Performance thresholds
+  thresholds:
+    # Alert if polling takes longer than this (seconds)
+    slow_poll_threshold: 5
+    # Alert if notification delivery takes longer than this (seconds)
+    slow_notification_threshold: 2
+  
+  # Memory management
+  memory:
+    # Clear old cache entries after this many operations
+    cache_cleanup_interval: 1000
+    # Maximum size of alert cache (number of entries)
+    max_cache_size: 10000

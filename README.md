@@ -1,6 +1,6 @@
-# OpenClaw Music Generation Skills
+# OpenClaw Skills Platform
 
-Complete suite of skills for generating music using AI. This workspace contains three integrated skills that work together to convert themes into downloadable music files.
+Complete suite of skills for music generation, repository management, and multi-agent orchestration. This workspace integrates multiple specialized skills that work together to create a comprehensive automation platform.
 
 ## 📦 Skills Overview
 
@@ -51,6 +51,15 @@ Complete suite of skills for generating music using AI. This workspace contains 
 - Output: Installation status and installed skills list
 - Location: `skills/github-installer/`
 - **Use to extend your OpenClaw installation**
+
+### 5. **Sub-Agent Monitor & Notifier** 📊 **NEW**
+- Monitors sub-agent status with built-in push notifications
+- Polling-based monitoring without modifying sub-agents
+- Multi-channel notifications (Email, Webhook, Slack, SMS, Log, File)
+- Scheduled monitoring with cron-like patterns
+- Alert deduplication and aggregation
+- Location: `skills/subagent-monitor-notifier/`
+- **Essential for multi-agent orchestration and monitoring**
 
 ## 🚀 Quick Start
 
@@ -121,7 +130,25 @@ clawskills/
 │   │   ├── requirements.txt           # Dependencies
 │   │   └── SKILL.md                   # Detailed documentation
 │   │
-│   ├── suno-music-generator/          # Skill 2: Prompt → Music
+│   ├── aiva-music-generator/          # Skill 2a: Prompt → Music (AIVA)
+│   │   ├── skill.py                   # Main implementation
+│   │   ├── config.yaml                # Configuration
+│   │   ├── requirements.txt           # Dependencies
+│   │   └── SKILL.md                   # Detailed documentation
+│   │
+│   ├── replicate-music-generator/     # Skill 2b: Prompt → Music (Replicate)
+│   │   ├── skill.py                   # Main implementation
+│   │   ├── config.yaml                # Configuration
+│   │   ├── requirements.txt           # Dependencies
+│   │   └── SKILL.md                   # Detailed documentation
+│   │
+│   ├── mubert-music-generator/        # Skill 2c: Prompt → Music (Mubert)
+│   │   ├── skill.py                   # Main implementation
+│   │   ├── config.yaml                # Configuration
+│   │   ├── requirements.txt           # Dependencies
+│   │   └── SKILL.md                   # Detailed documentation
+│   │
+│   ├── soundraw-music-generator/      # Skill 2d: Prompt → Music (Soundraw)
 │   │   ├── skill.py                   # Main implementation
 │   │   ├── config.yaml                # Configuration
 │   │   ├── requirements.txt           # Dependencies
@@ -133,10 +160,16 @@ clawskills/
 │   │   ├── requirements.txt           # Dependencies
 │   │   └── SKILL.md                   # Detailed documentation
 │   │
-│   └── github-installer/              # Skill 4: GitHub Repository Installer
+│   ├── github-installer/              # Skill 4: GitHub Repository Installer
+│   │   ├── skill.py                   # Main implementation
+│   │   ├── config.yaml                # Configuration
+│   │   ├── requirements.txt           # Dependencies
+│   │   └── SKILL.md                   # Detailed documentation
+│   │
+│   └── subagent-monitor-notifier/     # Skill 5: Sub-Agent Monitoring & Notifications
 │       ├── skill.py                   # Main implementation
 │       ├── config.yaml                # Configuration
-│       ├── requirements.txt           # Dependencies
+│       ├── __init__.py                # Package initialization
 │       └── SKILL.md                   # Detailed documentation
 │
 └── docs/                              # Additional documentation
@@ -156,27 +189,34 @@ All skills follow security-first principles:
 
 ## 🛠️ Skills Comparison
 
-| Feature | Skill 1 | Skill 2 | Skill 3 | Skill 4 |
-|---------|---------|---------|---------|---------|
-| Takes theme input | ❌ | ❌ | ✅ | ❌ |
-| Takes prompt input | ❌ | ✅ | ❌ | ❌ |
-| Takes repository URL | ❌ | ❌ | ❌ | ✅ |
-| Uses ChatGPT | ✅ | ❌ | ✅ | ❌ |
-| Uses Suno AI | ❌ | ✅ | ✅ | ❌ |
-| Uses GitHub API | ❌ | ❌ | ❌ | ✅ |
-| Returns music URL | ❌ | ✅ | ✅ | ❌ |
-| Installs skills | ❌ | ❌ | ❌ | ✅ |
-| **Use Case** | Prompt creation | Music generation | Complete workflow | Repository management |
-| **Ease of Use** | Intermediate | Intermediate | **Easy** ⭐ | Advanced |
+| Feature | Skill 1 | Skill 2 | Skill 3 | Skill 4 | Skill 5 |
+|---------|---------|---------|---------|---------|---------|
+| Takes theme input | ❌ | ❌ | ✅ | ❌ | ❌ |
+| Takes prompt input | ❌ | ✅ | ❌ | ❌ | ❌ |
+| Takes repository URL | ❌ | ❌ | ❌ | ✅ | ❌ |
+| Takes agent IDs | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Uses ChatGPT | ✅ | ❌ | ✅ | ❌ | ❌ |
+| Uses Music API | ❌ | ✅ | ✅ | ❌ | ❌ |
+| Uses GitHub API | ❌ | ❌ | ❌ | ✅ | ❌ |
+| Monitors agents | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Returns music URL | ❌ | ✅ | ✅ | ❌ | ❌ |
+| Sends notifications | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Installs skills | ❌ | ❌ | ❌ | ✅ | ❌ |
+| **Use Case** | Prompt creation | Music generation | Complete workflow | Repository mgmt | Agent monitoring |
+| **Ease of Use** | Intermediate | Intermediate | **Easy** ⭐ | Advanced | Advanced |
 
 ## 📚 Detailed Documentation
 
 ### For Individual Skills
 
 - [ChatGPT Prompt Generator](skills/chatgpt-prompt-generator/SKILL.md)
-- [Suno AI Music Generator](skills/suno-music-generator/SKILL.md)
+- [AIVA Music Generator](skills/aiva-music-generator/SKILL.md)
+- [Replicate Music Generator](skills/replicate-music-generator/SKILL.md)
+- [Mubert Music Generator](skills/mubert-music-generator/SKILL.md)
+- [Soundraw Music Generator](skills/soundraw-music-generator/SKILL.md)
 - [Music Generation Orchestrator](skills/music-orchestrator/SKILL.md)
 - [GitHub Installer](skills/github-installer/SKILL.md)
+- [Sub-Agent Monitor & Notifier](skills/subagent-monitor-notifier/SKILL.md)
 
 ### For Developers
 
@@ -275,8 +315,13 @@ source .env
 Each skill has a `config.yaml`:
 
 - **chatgpt-prompt-generator/config.yaml**: ChatGPT settings, input constraints
-- **suno-music-generator/config.yaml**: Suno API settings, polling config
+- **aiva-music-generator/config.yaml**: AIVA API settings, generation parameters
+- **replicate-music-generator/config.yaml**: Replicate API settings, model selection
+- **mubert-music-generator/config.yaml**: Mubert API settings, style configuration
+- **soundraw-music-generator/config.yaml**: Soundraw API settings, customization options
 - **music-orchestrator/config.yaml**: Workflow definition, dependencies
+- **github-installer/config.yaml**: GitHub integration, security settings
+- **subagent-monitor-notifier/config.yaml**: Polling intervals, notification channels, scheduling
 
 Edit these to customize behavior.
 
